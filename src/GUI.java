@@ -26,7 +26,7 @@ public class GUI extends Application {
 	public static Player me;
 	public static List<Player> players = new ArrayList<Player>();
 
-	private Label[][] fields;
+	private static Label[][] fields;
 	private TextArea scoreList;
 	
 	private  String[] board = {    // 20x20
@@ -129,10 +129,6 @@ public class GUI extends Application {
 			players.add(me);
 			fields[9][4].setGraphic(new ImageView(hero_up));
 
-			Player harry = new Player("Harry",14,15,"up");
-			players.add(harry);
-			fields[14][15].setGraphic(new ImageView(hero_up));
-
 			scoreList.setText(getScoreList());
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -193,6 +189,10 @@ public class GUI extends Application {
 			}
 		}
 		return null;
+	}
+
+	public static void insertHero(int x, int y) {
+		fields[x][y].setGraphic(new ImageView(hero_up));
 	}
 
 	

@@ -3,8 +3,11 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 
 public class ClientOutputThread extends Thread {
-    Socket inputSocket;
-    DataOutputStream outToServer;
+    private Socket inputSocket;
+    private DataOutputStream outToServer;
+    private String playerName;
+    private int xPos;
+    private int yPos;
 
     public ClientOutputThread(Socket inputSocket, DataOutputStream outToServer) {
         this.inputSocket = inputSocket;
@@ -21,4 +24,15 @@ public class ClientOutputThread extends Thread {
         }
     }
 
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public void setxPos(int xPos) {
+        this.xPos = xPos;
+    }
+
+    public void setyPos(int yPos) {
+        this.yPos = yPos;
+    }
 }

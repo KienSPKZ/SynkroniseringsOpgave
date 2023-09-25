@@ -12,9 +12,10 @@ public class TCPClient {
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connectionToSocket.getInputStream()));
         DataOutputStream outToServer = new DataOutputStream(connectionToSocket.getOutputStream());
 
-        ClientInputThread cit = new ClientInputThread(connectionToSocket, inFromServer);
-        cit.start();
         ClientOutputThread cot = new ClientOutputThread(connectionToSocket, outToServer);
         cot.start();
+
+        ClientInputThread cit = new ClientInputThread(connectionToSocket, inFromServer, cot);
+        cit.start();
     }
 }

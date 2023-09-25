@@ -141,10 +141,10 @@ public class GUI extends Application {
 			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connectionToSocket.getInputStream()));
 			DataOutputStream outToServer = new DataOutputStream(connectionToSocket.getOutputStream());
 
-			ClientInputThread cit = new ClientInputThread(connectionToSocket, inFromServer);
+			ClientInputThread cit = new ClientInputThread(connectionToSocket, inFromServer, this);
 			cit.start();
 
-			ClientOutputThread cot = new ClientOutputThread(connectionToSocket, outToServer);
+			ClientOutputThread cot = new ClientOutputThread(connectionToSocket, outToServer, this);
 			cot.start();
 		} catch(Exception e) {
 			e.printStackTrace();

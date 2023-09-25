@@ -5,10 +5,12 @@ public class ClientInputThread extends Thread {
     private Socket inputSocket;
     private BufferedReader inFromServer;
     private String clientMsg;
+    private GUI gui;
 
-    public ClientInputThread(Socket inputSocket, BufferedReader inFromServer) {
+    public ClientInputThread(Socket inputSocket, BufferedReader inFromServer, GUI gui) {
         this.inputSocket = inputSocket;
         this.inFromServer = inFromServer;
+        this.gui = gui;
     }
 
     public void run() {

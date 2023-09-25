@@ -5,13 +5,12 @@ import java.net.Socket;
 public class ClientOutputThread extends Thread {
     private Socket inputSocket;
     private DataOutputStream outToServer;
-    private String playerName;
-    private int xPos;
-    private int yPos;
+    private GUI gui;
 
-    public ClientOutputThread(Socket inputSocket, DataOutputStream outToServer) {
+    public ClientOutputThread(Socket inputSocket, DataOutputStream outToServer, GUI gui) {
         this.inputSocket = inputSocket;
         this.outToServer = outToServer;
+        this.gui = gui;
     }
 
     public void run() {
@@ -22,17 +21,5 @@ public class ClientOutputThread extends Thread {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-
-    public void setxPos(int xPos) {
-        this.xPos = xPos;
-    }
-
-    public void setyPos(int yPos) {
-        this.yPos = yPos;
     }
 }

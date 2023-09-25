@@ -15,10 +15,12 @@ public class TCPServer {
         Socket connection = socket.accept();
         System.out.println("Connection from: " + connection);
 
-        BufferedReader inToCLient = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         DataOutputStream outToClient = new DataOutputStream(connection.getOutputStream());
 
-
-
+        ServerInputThread sit = new ServerInputThread(connection, inFromClient);
+        sit.start();
+        ServerOutputThread sot = new ServerOutputThread(connection, outToClient);
+        sot.start();
     }
 }

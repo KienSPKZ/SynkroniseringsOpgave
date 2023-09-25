@@ -8,13 +8,13 @@ public class TCPClient {
 
     public static void main(String[] args) throws IOException {
 
-        Socket connectionToDNSSocket =  new Socket("localhost", 1234);
-        BufferedReader inFromDNSServer = new BufferedReader(new InputStreamReader(connectionToDNSSocket.getInputStream()));
-        DataOutputStream outTODNSServer = new DataOutputStream(connectionToDNSSocket.getOutputStream());
+        Socket connectionToSocket =  new Socket("localhost", 1234);
+        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connectionToSocket.getInputStream()));
+        DataOutputStream outToServer = new DataOutputStream(connectionToSocket.getOutputStream());
 
-
+        ClientInputThread cit = new ClientInputThread(connectionToSocket, inFromServer);
+        cit.start();
+        ClientOutputThread cot = new ClientOutputThread(connectionToSocket, outToServer);
+        cot.start();
     }
-
-
-
 }

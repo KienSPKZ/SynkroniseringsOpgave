@@ -1,4 +1,17 @@
-
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -8,18 +21,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.image.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.text.*;
-
-public class GUI extends Application {
+public class GUI2 extends Application {
 
 	public static final int size = 20; 
 	public static final int scene_height = size * 20 + 100;
@@ -163,13 +165,13 @@ public class GUI extends Application {
             // Setting up standard players
 
 
-			me = new Player("Orville",9,4,"up");
+			me = new Player("Henry",14,15,"up");
 			players.add(me);
-			fields[9][4].setGraphic(new ImageView(hero_up));
-
-			Player henry = new Player("Henry",14,15,"up");
-			players.add(henry);
 			fields[14][15].setGraphic(new ImageView(hero_up));
+
+			Player henry = new Player("Orville",9,4,"up");
+			players.add(henry);
+			fields[9][4].setGraphic(new ImageView(hero_up));
 
 			scoreList.setText(getScoreList());
 
@@ -179,7 +181,7 @@ public class GUI extends Application {
 			inFromServer = new BufferedReader(new InputStreamReader(connectionToSocket.getInputStream()));
 			outToServer = new DataOutputStream(connectionToSocket.getOutputStream());
 
-			ClientInputThread cit = new ClientInputThread(inFromServer, this);
+			ClientInputThread2 cit = new ClientInputThread2(inFromServer, this);
 			cit.start();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -224,6 +226,7 @@ public class GUI extends Application {
 		}
 		scoreList.setText(getScoreList());
 	}
+
 	public void runAnotherPlayerMoved(String name, int delta_x, int delta_y, String direction) {
 		int index = getIndexFromListByName(name);
 		Platform.runLater(new Runnable() {

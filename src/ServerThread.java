@@ -24,7 +24,9 @@ public class ServerThread extends Thread {
                 if (clientMsg.equals("null")) {
                     break;
                 }
-                System.out.println(clientMsg);
+                for (ServerThread st: gameServer.serverThreads) {
+                    st.outToClient.writeBytes(clientMsg + '\n');
+                }
             }
             inputSocket.close();
         } catch (Exception e) {

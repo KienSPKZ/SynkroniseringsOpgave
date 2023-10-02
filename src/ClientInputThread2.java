@@ -1,11 +1,10 @@
 import java.io.BufferedReader;
-import java.net.Socket;
 
-public class ClientInputThread extends Thread {
+public class ClientInputThread2 extends Thread {
     private BufferedReader inFromServer;
-    private GUI gui;
+    private GUI2 gui;
 
-    public ClientInputThread(BufferedReader inFromServer, GUI gui) {
+    public ClientInputThread2(BufferedReader inFromServer, GUI2 gui) {
         this.inFromServer = inFromServer;
         this.gui = gui;
     }

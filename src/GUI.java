@@ -126,7 +126,6 @@ public class GUI extends Application {
 				switch (event.getCode()) {
 				case UP:
 					try {
-						//playerMoved(0,-1,"up");
 						outToServer.writeBytes( me.name + " " + 0 + " " + -1 + " " + "up" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
@@ -134,7 +133,6 @@ public class GUI extends Application {
 					break;
 				case DOWN:
 					try {
-						//playerMoved(0,+1,"down");
 						outToServer.writeBytes(me.name + " " + 0 + " " + +1 + " " + "down" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
@@ -142,7 +140,6 @@ public class GUI extends Application {
 					break;
 				case LEFT:
 					try {
-						//playerMoved(-1,0,"left");
 						outToServer.writeBytes(me.name + " " + -1 + " " + 0 + " " + "left" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
@@ -150,7 +147,6 @@ public class GUI extends Application {
 					break;
 				case RIGHT:
 					try {
-						//playerMoved(+1,0,"right");
 						outToServer.writeBytes(me.name + " " + +1 + " " + 0 + " " + "right" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
@@ -185,57 +181,18 @@ public class GUI extends Application {
 			e.printStackTrace();
 		}
 	}
-
-	public void playerMoved(int delta_x, int delta_y, String direction) {
-		me.direction = direction;
-		int x = me.getXpos(),y = me.getYpos();
-
-		if (board[y+delta_y].charAt(x+delta_x)=='w') {
-			me.addPoints(-1);
-		} 
-		else {
-			Player p = getPlayerAt(x+delta_x,y+delta_y);
-			if (p!=null) {
-              me.addPoints(10);
-              p.addPoints(-10);
-			} else {
-				me.addPoints(1);
-			
-				fields[x][y].setGraphic(new ImageView(image_floor));
-				x+=delta_x;
-				y+=delta_y;
-
-				if (direction.equals("right")) {
-					fields[x][y].setGraphic(new ImageView(hero_right));
-				};
-				if (direction.equals("left")) {
-					fields[x][y].setGraphic(new ImageView(hero_left));
-				};
-				if (direction.equals("up")) {
-					fields[x][y].setGraphic(new ImageView(hero_up));
-				};
-				if (direction.equals("down")) {
-					fields[x][y].setGraphic(new ImageView(hero_down));
-				};
-
-				me.setXpos(x);
-				me.setYpos(y);
-			}
-		}
-		scoreList.setText(getScoreList());
-	}
-	public void runAnotherPlayerMoved(String name, int delta_x, int delta_y, String direction) {
+	public void runPlayerMoved(String name, int delta_x, int delta_y, String direction) {
 		int index = getIndexFromListByName(name);
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				anotherPlayerMoved(index, delta_x, delta_y, direction);
+				playerMoved(index, delta_x, delta_y, direction);
 				System.out.println("Test");
 			}
 		});
 	}
 
-	private void anotherPlayerMoved(int index, int delta_x, int delta_y, String direction) {
+	private void playerMoved(int index, int delta_x, int delta_y, String direction) {
 		players.get(index).direction = direction;
 		int x = players.get(index).getXpos(),y = players.get(index).getYpos();
 

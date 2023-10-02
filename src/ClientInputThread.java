@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.net.Socket;
 
 public class ClientInputThread extends Thread {
     private BufferedReader inFromServer;
@@ -14,7 +13,7 @@ public class ClientInputThread extends Thread {
         try {
             while (true) {
                 String[] input = inFromServer.readLine().split(" ");
-                gui.runAnotherPlayerMoved(input[0], Integer.parseInt(input[1]), Integer.parseInt(input[2]), input[3]);
+                gui.runPlayerMoved(input[0], Integer.parseInt(input[1]), Integer.parseInt(input[2]), input[3]);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

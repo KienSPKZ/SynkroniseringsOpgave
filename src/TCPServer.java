@@ -27,7 +27,13 @@ public class TCPServer {
             gameServer.serverThreads.add(st);
         }
     }
-    public ArrayList<ServerThread> serverThreads = new ArrayList<>();
+    private ArrayList<ServerThread> serverThreads = new ArrayList<>();
+
+    public void sendMsgToClients(String msg) throws IOException {
+        for (ServerThread st: serverThreads) {
+            st.writeToClient(msg);
+        }
+    }
 
     public TCPServer() {
 

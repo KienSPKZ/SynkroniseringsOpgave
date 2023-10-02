@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 public class ServerThread extends Thread {
@@ -24,13 +25,15 @@ public class ServerThread extends Thread {
                 if (clientMsg.equals("null")) {
                     break;
                 }
-                for (ServerThread st: gameServer.serverThreads) {
-                    st.outToClient.writeBytes(clientMsg + '\n');
-                }
+            gameServer.sendMsgToClients(clientMsg);
             }
             inputSocket.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void writeToClient(String msg) throws IOException {
+        outToClient.writeBytes(msg + '\n');
     }
 }

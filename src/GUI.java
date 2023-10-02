@@ -187,7 +187,6 @@ public class GUI extends Application {
 			@Override
 			public void run() {
 				playerMoved(index, delta_x, delta_y, direction);
-				System.out.println("Test");
 			}
 		});
 	}

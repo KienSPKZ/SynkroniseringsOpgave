@@ -126,6 +126,7 @@ public class GUI extends Application {
 				case UP:
 					try {
 						playerMoved(0,-1,"up");
+						outToServer.writeBytes( me.name + " " + 0 + " " + -1 + " " + "up" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -133,6 +134,7 @@ public class GUI extends Application {
 				case DOWN:
 					try {
 						playerMoved(0,+1,"down");
+						outToServer.writeBytes(me.name + " " + 0 + " " + +1 + " " + "down" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -140,6 +142,7 @@ public class GUI extends Application {
 				case LEFT:
 					try {
 						playerMoved(-1,0,"left");
+						outToServer.writeBytes(me.name + " " + -1 + " " + 0 + " " + "left" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -147,6 +150,7 @@ public class GUI extends Application {
 				case RIGHT:
 					try {
 						playerMoved(+1,0,"right");
+						outToServer.writeBytes(me.name + " " + +1 + " " + 0 + " " + "right" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -157,13 +161,13 @@ public class GUI extends Application {
 			
             // Setting up standard players
 			
-			me = new Player("Orville",9,4,"up");
+			me = new Player("Henry",14,15,"up");
 			players.add(me);
-			fields[9][4].setGraphic(new ImageView(hero_up));
-
-			Player henry = new Player("Henry",9,4,"up");
-			players.add(henry);
 			fields[14][15].setGraphic(new ImageView(hero_up));
+
+			Player orville = new Player("Orville",9,4,"up");
+			players.add(orville);
+			fields[9][4].setGraphic(new ImageView(hero_up));
 
 			scoreList.setText(getScoreList());
 
@@ -172,12 +176,15 @@ public class GUI extends Application {
 			Socket connectionToSocket =  new Socket("localhost", 1234);
 			inFromServer = new BufferedReader(new InputStreamReader(connectionToSocket.getInputStream()));
 			outToServer = new DataOutputStream(connectionToSocket.getOutputStream());
+
+			ClientInputThread cit = new ClientInputThread(connectionToSocket, inFromServer, this);
+			cit.start();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void playerMoved(int delta_x, int delta_y, String direction) throws IOException {
+	public void playerMoved(int delta_x, int delta_y, String direction) {
 		me.direction = direction;
 		int x = me.getXpos(),y = me.getYpos();
 
@@ -211,8 +218,6 @@ public class GUI extends Application {
 
 				me.setXpos(x);
 				me.setYpos(y);
-
-				outToServer.writeBytes(me.getXpos() + " " + me.getYpos() + " " + me.getDirection() + '\n');
 			}
 		}
 		scoreList.setText(getScoreList());

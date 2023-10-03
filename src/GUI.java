@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,16 +26,15 @@ public class GUI extends Application {
 	public static final int size = 20; 
 	public static final int scene_height = size * 20 + 100;
 	public static final int scene_width = size * 20 + 200;
-
 	public static Image image_floor;
 	public static Image image_wall;
 	public static Image hero_right,hero_left,hero_up,hero_down;
-
 	public static Player me;
 	public static List<Player> players = new ArrayList<Player>();
-
 	private static Label[][] fields;
 	private TextArea scoreList;
+	private String name;
+	public static final List<String> playerSpawns = new ArrayList<>();
 	
 	private  String[] board = {    // 20x20
 			"wwwwwwwwwwwwwwwwwwww",
@@ -72,6 +73,13 @@ public class GUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			Scanner sc = new Scanner(System.in);
+			System.out.println("Write your name:");
+			name = sc.nextLine();
+			sc.close();
+			playerSpawns.add("9 4");
+			playerSpawns.add("14 15");
+			playerSpawns.add("6 18");
 			GridPane grid = new GridPane();
 			grid.setHgap(10);
 			grid.setVgap(10);
@@ -126,28 +134,28 @@ public class GUI extends Application {
 				switch (event.getCode()) {
 				case UP:
 					try {
-						outToServer.writeBytes( me.name + " " + 0 + " " + -1 + " " + "up" + '\n');
+						outToServer.writeBytes( "move " + me.name + " " + 0 + " " + -1 + " " + "up" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
 					break;
 				case DOWN:
 					try {
-						outToServer.writeBytes(me.name + " " + 0 + " " + +1 + " " + "down" + '\n');
+						outToServer.writeBytes("move " + me.name + " " + 0 + " " + +1 + " " + "down" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
 					break;
 				case LEFT:
 					try {
-						outToServer.writeBytes(me.name + " " + -1 + " " + 0 + " " + "left" + '\n');
+						outToServer.writeBytes("move " + me.name + " " + -1 + " " + 0 + " " + "left" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
 					break;
 				case RIGHT:
 					try {
-						outToServer.writeBytes(me.name + " " + +1 + " " + 0 + " " + "right" + '\n');
+						outToServer.writeBytes("move " + me.name + " " + +1 + " " + 0 + " " + "right" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -158,14 +166,11 @@ public class GUI extends Application {
 			
             // Setting up standard players
 
-
-			me = new Player("Orville",9,4,"up");
+			Random rand = new Random();
+			String[] playerPos = playerSpawns.get(rand.nextInt(playerSpawns.size())).split(" ");
+			me = new Player(name,Integer.parseInt(playerPos[0]),Integer.parseInt(playerPos[1]),"up");
 			players.add(me);
-			fields[9][4].setGraphic(new ImageView(hero_up));
-
-			Player henry = new Player("Henry",14,15,"up");
-			players.add(henry);
-			fields[14][15].setGraphic(new ImageView(hero_up));
+			fields[Integer.parseInt(playerPos[0])][Integer.parseInt(playerPos[1])].setGraphic(new ImageView(hero_up));
 
 			scoreList.setText(getScoreList());
 
@@ -177,6 +182,7 @@ public class GUI extends Application {
 
 			ClientInputThread cit = new ClientInputThread(inFromServer, this);
 			cit.start();
+			sendStringForMePlayerInfo();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -230,7 +236,7 @@ public class GUI extends Application {
 		scoreList.setText(getScoreList());
 	}
 
-	public int getIndexFromListByName(String name) {
+	private int getIndexFromListByName(String name) {
 		int index = 0;
 		for (Player p : players) {
 			if (p.name.equals(name)) {
@@ -239,6 +245,48 @@ public class GUI extends Application {
 			index++;
 		}
 		return -1;
+	}
+
+	public void addNewPlayer(String name, int xPos, int yPos, String direction) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if (!me.name.equals(name) && !containsName(name)) {
+					Player newPlayer = new Player(name, xPos, yPos, direction);
+					players.add(newPlayer);
+					if (direction.equals("right")) {
+						fields[xPos][yPos].setGraphic(new ImageView(hero_right));
+					}
+					if (direction.equals("left")) {
+						fields[xPos][yPos].setGraphic(new ImageView(hero_left));
+					}
+					if (direction.equals("up")) {
+						fields[xPos][yPos].setGraphic(new ImageView(hero_up));
+					}
+					if (direction.equals("down")) {
+						fields[xPos][yPos].setGraphic(new ImageView(hero_down));
+					}
+					try {
+						sendStringForMePlayerInfo();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+		});
+	}
+
+	public void sendStringForMePlayerInfo() throws IOException {
+		outToServer.writeBytes("newPlayer " + me.name + " " + me.xpos + " " + me.ypos + " " + me.direction + '\n');
+	}
+
+	private boolean containsName(String name) {
+		for (Player pl: players) {
+			if (pl.name.equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public String getScoreList() {

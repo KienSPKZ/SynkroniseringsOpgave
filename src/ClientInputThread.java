@@ -13,7 +13,11 @@ public class ClientInputThread extends Thread {
         try {
             while (true) {
                 String[] input = inFromServer.readLine().split(" ");
-                gui.runPlayerMoved(input[0], Integer.parseInt(input[1]), Integer.parseInt(input[2]), input[3]);
+                if (input[0].equals("move")) {
+                    gui.runPlayerMoved(input[1], Integer.parseInt(input[2]), Integer.parseInt(input[3]), input[4]);
+                } else if (input[0].equals("newPlayer")) {
+                    gui.addNewPlayer(input[1], Integer.parseInt(input[2]), Integer.parseInt(input[3]), input[4]);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

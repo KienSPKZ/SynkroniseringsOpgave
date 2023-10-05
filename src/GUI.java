@@ -141,7 +141,7 @@ public class GUI extends Application {
 					break;
 				case DOWN:
 					try {
-						outToServer.writeBytes("move " + me.name + " " + 0 + " " + +1 + " " + "down" + '\n');
+						outToServer.writeBytes("move " + me.name + " " + 0 + " " + 1 + " " + "down" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -155,7 +155,7 @@ public class GUI extends Application {
 					break;
 				case RIGHT:
 					try {
-						outToServer.writeBytes("move " + me.name + " " + +1 + " " + 0 + " " + "right" + '\n');
+						outToServer.writeBytes("move " + me.name + " " + 1 + " " + 0 + " " + "right" + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}

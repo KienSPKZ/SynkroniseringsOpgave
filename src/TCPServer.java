@@ -29,7 +29,7 @@ public class TCPServer {
     }
     private ArrayList<ServerThread> serverThreads = new ArrayList<>();
 
-    public void sendMsgToClients(String msg) throws IOException {
+    public synchronized void sendMsgToClients(String msg) throws IOException {
         for (ServerThread st: serverThreads) {
             st.writeToClient(msg);
         }

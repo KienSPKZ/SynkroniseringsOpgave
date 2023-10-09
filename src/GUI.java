@@ -292,7 +292,7 @@ public class GUI extends Application {
 	}
 
 	public void sendStringForMePlayerInfo() throws IOException {
-		outToServer.writeBytes("newPlayer " + me.name + " " + me.xpos + " " + me.ypos + " " + me.direction + me.point + '\n');
+		outToServer.writeBytes("newPlayer " + me.name + " " + me.xpos + " " + me.ypos + " " + me.direction + " " + me.point + '\n');
 	}
 
 	public void shootFromPlayerPublic(String name) {

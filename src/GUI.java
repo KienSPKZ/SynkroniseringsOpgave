@@ -210,12 +210,7 @@ public class GUI extends Application {
 	}
 	public void runPlayerMoved(String name, int delta_x, int delta_y, String direction) {
 		int index = getIndexFromListByName(name);
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				playerMoved(index, delta_x, delta_y, direction);
-			}
-		});
+		Platform.runLater(() -> playerMoved(index, delta_x, delta_y, direction));
 	}
 
 	private void playerMoved(int index, int delta_x, int delta_y, String direction) {
@@ -269,34 +264,31 @@ public class GUI extends Application {
 	}
 
 	public void addNewPlayer(String name, int xPos, int yPos, String direction, int points) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				if (!me.name.equals(name) && !containsName(name)) {
-					Player newPlayer = new Player(name, xPos, yPos, direction);
-					newPlayer.addPoints(points);
-					players.add(newPlayer);
-					if (direction.equals("right")) {
-						fields[xPos][yPos].setGraphic(new ImageView(hero_right));
-					}
-					if (direction.equals("left")) {
-						fields[xPos][yPos].setGraphic(new ImageView(hero_left));
-					}
-					if (direction.equals("up")) {
-						fields[xPos][yPos].setGraphic(new ImageView(hero_up));
-					}
-					if (direction.equals("down")) {
-						fields[xPos][yPos].setGraphic(new ImageView(hero_down));
-					}
-					try {
-						sendStringForMePlayerInfo();
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-					scoreList.setText(getScoreList());
-				}
-			}
-		});
+		Platform.runLater(() -> {
+            if (!me.name.equals(name) && !containsName(name)) {
+                Player newPlayer = new Player(name, xPos, yPos, direction);
+                newPlayer.addPoints(points);
+                players.add(newPlayer);
+                if (direction.equals("right")) {
+                    fields[xPos][yPos].setGraphic(new ImageView(hero_right));
+                }
+                if (direction.equals("left")) {
+                    fields[xPos][yPos].setGraphic(new ImageView(hero_left));
+                }
+                if (direction.equals("up")) {
+                    fields[xPos][yPos].setGraphic(new ImageView(hero_up));
+                }
+                if (direction.equals("down")) {
+                    fields[xPos][yPos].setGraphic(new ImageView(hero_down));
+                }
+                try {
+                    sendStringForMePlayerInfo();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                scoreList.setText(getScoreList());
+            }
+        });
 	}
 
 	public void sendStringForMePlayerInfo() throws IOException {
@@ -309,108 +301,102 @@ public class GUI extends Application {
 	}
 
 	private void shootFromPLayer(int index, String direction, int xPos, int yPos) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				int x_d = xPos;
-				int y_d = yPos;
-				if (direction.equals("up")) {
-					y_d -= 1;
+		Platform.runLater(() -> {
+            int x_d = xPos;
+            int y_d = yPos;
+            if (direction.equals("up")) {
+                y_d -= 1;
 
-				} else if (direction.equals("down")) {
-					y_d += 1;
+            } else if (direction.equals("down")) {
+                y_d += 1;
 
-				} else if (direction.equals("right")) {
-					x_d += 1;
+            } else if (direction.equals("right")) {
+                x_d += 1;
 
-				} else if (direction.equals("left")) {
-					x_d -= 1;
+            } else if (direction.equals("left")) {
+                x_d -= 1;
 
-				}
-				int x_r = x_d;
-				int y_r = y_d;
-				int fieldsChanged = 0;
-				while (board[y_d].charAt(x_d) != 'w') {
-					Player p = getPlayerAt(x_d, y_d);
-					if (p != null) {
-						players.get(index).addPoints(20);
-						p.addPoints(-20);
-						scoreList.setText(getScoreList());
-						break;
-					}
-					if (direction.equals("up")) {
-						if (board[y_d - 1].charAt(x_d) == 'w') {
-							fields[x_d][y_d].setGraphic(new ImageView(fire_w_n));
-						} else {
-							fields[x_d][y_d].setGraphic(new ImageView(fire_v));
-						}
-						y_d--;
-					} else if (direction.equals("down")) {
-						if (board[y_d + 1].charAt(x_d) == 'w') {
-							fields[x_d][y_d].setGraphic(new ImageView(fire_w_s));
-						} else {
-							fields[x_d][y_d].setGraphic(new ImageView(fire_v));
-						}
-						y_d++;
+            }
+            int x_r = x_d;
+            int y_r = y_d;
+            int fieldsChanged = 0;
+            while (board[y_d].charAt(x_d) != 'w') {
+                Player p = getPlayerAt(x_d, y_d);
+                if (p != null) {
+                    players.get(index).addPoints(20);
+                    p.addPoints(-20);
+                    scoreList.setText(getScoreList());
+                    break;
+                }
+                if (direction.equals("up")) {
+                    if (board[y_d - 1].charAt(x_d) == 'w') {
+                        fields[x_d][y_d].setGraphic(new ImageView(fire_w_n));
+                    } else {
+                        fields[x_d][y_d].setGraphic(new ImageView(fire_v));
+                    }
+                    y_d--;
+                } else if (direction.equals("down")) {
+                    if (board[y_d + 1].charAt(x_d) == 'w') {
+                        fields[x_d][y_d].setGraphic(new ImageView(fire_w_s));
+                    } else {
+                        fields[x_d][y_d].setGraphic(new ImageView(fire_v));
+                    }
+                    y_d++;
 
-					} else if (direction.equals("right")) {
-						if (board[y_d].charAt(x_d + 1) == 'w') {
-							fields[x_d][y_d].setGraphic(new ImageView(fire_w_e));
-						} else {
-							fields[x_d][y_d].setGraphic(new ImageView(fire_h));
-						}
-						x_d++;
+                } else if (direction.equals("right")) {
+                    if (board[y_d].charAt(x_d + 1) == 'w') {
+                        fields[x_d][y_d].setGraphic(new ImageView(fire_w_e));
+                    } else {
+                        fields[x_d][y_d].setGraphic(new ImageView(fire_h));
+                    }
+                    x_d++;
 
-					} else if (direction.equals("left")) {
-						if (board[y_d].charAt(x_d - 1) == 'w') {
-							fields[x_d][y_d].setGraphic(new ImageView(fire_w_w));
-						} else {
-							fields[x_d][y_d].setGraphic(new ImageView(fire_h));
-						}
-						x_d--;
-					}
-					fieldsChanged++;
-				}
-				ExecutorService executor = Executors.newSingleThreadExecutor();
-				int finalFieldsChanged = fieldsChanged;
-				executor.submit(() -> {
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					removeShot(x_r, y_r, direction, finalFieldsChanged);
-				});
-			}
-		});
+                } else if (direction.equals("left")) {
+                    if (board[y_d].charAt(x_d - 1) == 'w') {
+                        fields[x_d][y_d].setGraphic(new ImageView(fire_w_w));
+                    } else {
+                        fields[x_d][y_d].setGraphic(new ImageView(fire_h));
+                    }
+                    x_d--;
+                }
+                fieldsChanged++;
+            }
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            int finalFieldsChanged = fieldsChanged;
+            executor.submit(() -> {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                removeShot(x_r, y_r, direction, finalFieldsChanged);
+            });
+        });
 	}
 
 	private void removeShot(int x_r, int y_r, String direction, int fieldsChanged) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				int xPos_r = x_r;
-				int yPos_r = y_r;
-				for (int i = fieldsChanged; i > 0; i--) {
-					Player p = getPlayerAt(xPos_r, yPos_r);
-					if (p == null) {
-						fields[xPos_r][yPos_r].setGraphic(new ImageView(image_floor));
-					}
-					if (direction.equals("up")) {
-						yPos_r--;
+		Platform.runLater(() -> {
+            int xPos_r = x_r;
+            int yPos_r = y_r;
+            for (int i = fieldsChanged; i > 0; i--) {
+                Player p = getPlayerAt(xPos_r, yPos_r);
+                if (p == null) {
+                    fields[xPos_r][yPos_r].setGraphic(new ImageView(image_floor));
+                }
+                if (direction.equals("up")) {
+                    yPos_r--;
 
-					} else if (direction.equals("down")) {
-						yPos_r++;
+                } else if (direction.equals("down")) {
+                    yPos_r++;
 
-					} else if (direction.equals("right")) {
-						xPos_r++;
+                } else if (direction.equals("right")) {
+                    xPos_r++;
 
-					} else if (direction.equals("left")) {
-						xPos_r--;
-					}
-				}
-			}
-		});
+                } else if (direction.equals("left")) {
+                    xPos_r--;
+                }
+            }
+        });
 	}
 
 	private boolean containsName(String name) {

@@ -285,6 +285,7 @@ public class GUI extends Application {
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
+					scoreList.setText(getScoreList());
 				}
 			}
 		});
@@ -326,6 +327,7 @@ public class GUI extends Application {
 					if (p != null) {
 						players.get(index).addPoints(20);
 						p.addPoints(-20);
+						scoreList.setText(getScoreList());
 						break;
 					}
 					if (direction.equals("up")) {

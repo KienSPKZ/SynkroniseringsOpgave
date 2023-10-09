@@ -260,12 +260,13 @@ public class GUI extends Application {
 		return -1;
 	}
 
-	public void addNewPlayer(String name, int xPos, int yPos, String direction) {
+	public void addNewPlayer(String name, int xPos, int yPos, String direction, int points) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				if (!me.name.equals(name) && !containsName(name)) {
 					Player newPlayer = new Player(name, xPos, yPos, direction);
+					newPlayer.addPoints(points);
 					players.add(newPlayer);
 					if (direction.equals("right")) {
 						fields[xPos][yPos].setGraphic(new ImageView(hero_right));
@@ -290,7 +291,7 @@ public class GUI extends Application {
 	}
 
 	public void sendStringForMePlayerInfo() throws IOException {
-		outToServer.writeBytes("newPlayer " + me.name + " " + me.xpos + " " + me.ypos + " " + me.direction + '\n');
+		outToServer.writeBytes("newPlayer " + me.name + " " + me.xpos + " " + me.ypos + " " + me.direction + me.point + '\n');
 	}
 
 	public void shootFromPlayerPublic(String name) {

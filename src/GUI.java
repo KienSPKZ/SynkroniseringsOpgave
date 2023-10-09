@@ -295,10 +295,10 @@ public class GUI extends Application {
 
 	public void shootFromPlayerPublic(String name) {
 		int index = getIndexFromListByName(name);
-		shootFromPLayer(players.get(index).direction, players.get(index).xpos, players.get(index).ypos);
+		shootFromPLayer(index, players.get(index).direction, players.get(index).xpos, players.get(index).ypos);
 	}
 
-	private void shootFromPLayer(String direction, int xPos, int yPos) {
+	private void shootFromPLayer(int index, String direction, int xPos, int yPos) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -323,7 +323,7 @@ public class GUI extends Application {
 				while (board[y_d].charAt(x_d) != 'w') {
 					Player p = getPlayerAt(x_d, y_d);
 					if (p != null) {
-						me.addPoints(20);
+						players.get(index).addPoints(20);
 						p.addPoints(-20);
 						break;
 					}

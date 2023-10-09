@@ -30,7 +30,7 @@ public class GUI extends Application {
 	public static final int scene_width = size * 20 + 200;
 	public static Image image_floor;
 	public static Image image_wall;
-	public static Image hero_right,hero_left,hero_up,hero_down,fire_up,fire_down,fire_left,fire_right;
+	public static Image hero_right,hero_left,hero_up,hero_down,fire_v, fire_h, fire_w_e, fire_w_n, fire_w_s, fire_w_w;
 	public static Player me;
 	public static List<Player> players = new ArrayList<Player>();
 	private static Label[][] fields;
@@ -110,10 +110,12 @@ public class GUI extends Application {
 			hero_left   = new Image(getClass().getResourceAsStream("Image/heroLeft.png"),size,size,false,false);
 			hero_up     = new Image(getClass().getResourceAsStream("Image/heroUp.png"),size,size,false,false);
 			hero_down   = new Image(getClass().getResourceAsStream("Image/heroDown.png"),size,size,false,false);
-			fire_up		= new Image(getClass().getResourceAsStream("Image/fireUp.png"),size,size,false,false);
-			fire_down	= new Image(getClass().getResourceAsStream("Image/fireDown.png"),size,size,false,false);
-			fire_left	= new Image(getClass().getResourceAsStream("Image/fireLeft.png"),size,size,false,false);
-			fire_right	= new Image(getClass().getResourceAsStream("Image/fireRight.png"),size,size,false,false);
+			fire_v   	= new Image(getClass().getResourceAsStream("Image/fireVertical.png"),size,size,false,false);
+			fire_h   	= new Image(getClass().getResourceAsStream("Image/fireHorizontal.png"),size,size,false,false);
+			fire_w_e   	= new Image(getClass().getResourceAsStream("Image/fireWallEast.png"),size,size,false,false);
+			fire_w_n   	= new Image(getClass().getResourceAsStream("Image/fireWallNorth.png"),size,size,false,false);
+			fire_w_s   	= new Image(getClass().getResourceAsStream("Image/fireWallSouth.png"),size,size,false,false);
+			fire_w_w   	= new Image(getClass().getResourceAsStream("Image/fireWallWest.png"),size,size,false,false);
 
 			fields = new Label[20][20];
 			for (int j=0; j<20; j++) {
@@ -337,19 +339,34 @@ public class GUI extends Application {
 						break;
 					}
 					if (direction.equals("up")) {
-						fields[x_d][y_d].setGraphic(new ImageView(fire_up));
+						if (board[y_d - 1].charAt(x_d) == 'w') {
+							fields[x_d][y_d].setGraphic(new ImageView(fire_w_n));
+						} else {
+							fields[x_d][y_d].setGraphic(new ImageView(fire_v));
+						}
 						y_d--;
-
 					} else if (direction.equals("down")) {
-						fields[x_d][y_d].setGraphic(new ImageView(fire_down));
+						if (board[y_d + 1].charAt(x_d) == 'w') {
+							fields[x_d][y_d].setGraphic(new ImageView(fire_w_s));
+						} else {
+							fields[x_d][y_d].setGraphic(new ImageView(fire_v));
+						}
 						y_d++;
 
 					} else if (direction.equals("right")) {
-						fields[x_d][y_d].setGraphic(new ImageView(fire_right));
+						if (board[y_d].charAt(x_d + 1) == 'w') {
+							fields[x_d][y_d].setGraphic(new ImageView(fire_w_e));
+						} else {
+							fields[x_d][y_d].setGraphic(new ImageView(fire_h));
+						}
 						x_d++;
 
 					} else if (direction.equals("left")) {
-						fields[x_d][y_d].setGraphic(new ImageView(fire_left));
+						if (board[y_d].charAt(x_d - 1) == 'w') {
+							fields[x_d][y_d].setGraphic(new ImageView(fire_w_w));
+						} else {
+							fields[x_d][y_d].setGraphic(new ImageView(fire_h));
+						}
 						x_d--;
 					}
 					fieldsChanged++;

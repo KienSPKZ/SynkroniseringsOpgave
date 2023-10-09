@@ -349,7 +349,7 @@ public class GUI extends Application {
 				int finalFieldsChanged = fieldsChanged;
 				executor.submit(() -> {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -366,7 +366,10 @@ public class GUI extends Application {
 				int xPos_r = x_r;
 				int yPos_r = y_r;
 				for (int i = fieldsChanged; i > 0; i--) {
-					fields[xPos_r][yPos_r].setGraphic(new ImageView(image_floor));
+					Player p = getPlayerAt(xPos_r, yPos_r);
+					if (p == null) {
+						fields[xPos_r][yPos_r].setGraphic(new ImageView(image_floor));
+					}
 					if (direction.equals("up")) {
 						yPos_r--;
 

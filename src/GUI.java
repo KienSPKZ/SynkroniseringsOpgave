@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -28,7 +30,7 @@ public class GUI extends Application {
 	public static final int scene_width = size * 20 + 200;
 	public static Image image_floor;
 	public static Image image_wall;
-	public static Image hero_right,hero_left,hero_up,hero_down;
+	public static Image hero_right,hero_left,hero_up,hero_down,fire_up,fire_down,fire_left,fire_right;
 	public static Player me;
 	public static List<Player> players = new ArrayList<Player>();
 	private static Label[][] fields;
@@ -102,6 +104,10 @@ public class GUI extends Application {
 			hero_left   = new Image(getClass().getResourceAsStream("Image/heroLeft.png"),size,size,false,false);
 			hero_up     = new Image(getClass().getResourceAsStream("Image/heroUp.png"),size,size,false,false);
 			hero_down   = new Image(getClass().getResourceAsStream("Image/heroDown.png"),size,size,false,false);
+			fire_up		= new Image(getClass().getResourceAsStream("Image/fireUp.png"),size,size,false,false);
+			fire_down	= new Image(getClass().getResourceAsStream("Image/fireDown.png"),size,size,false,false);
+			fire_left	= new Image(getClass().getResourceAsStream("Image/fireLeft.png"),size,size,false,false);
+			fire_right	= new Image(getClass().getResourceAsStream("Image/fireRight.png"),size,size,false,false);
 
 			fields = new Label[20][20];
 			for (int j=0; j<20; j++) {
@@ -156,6 +162,13 @@ public class GUI extends Application {
 				case RIGHT:
 					try {
 						outToServer.writeBytes("move " + me.name + " " + 1 + " " + 0 + " " + "right" + '\n');
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+					break;
+				case SHIFT:
+					try {
+						outToServer.writeBytes("shoot " + me.name + '\n');
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -278,6 +291,97 @@ public class GUI extends Application {
 
 	public void sendStringForMePlayerInfo() throws IOException {
 		outToServer.writeBytes("newPlayer " + me.name + " " + me.xpos + " " + me.ypos + " " + me.direction + '\n');
+	}
+
+	public void shootFromPlayerPublic(String name) {
+		int index = getIndexFromListByName(name);
+		shootFromPLayer(players.get(index).direction, players.get(index).xpos, players.get(index).ypos);
+	}
+
+	private void shootFromPLayer(String direction, int xPos, int yPos) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				int x_d = xPos;
+				int y_d = yPos;
+				if (direction.equals("up")) {
+					y_d -= 1;
+
+				} else if (direction.equals("down")) {
+					y_d += 1;
+
+				} else if (direction.equals("right")) {
+					x_d += 1;
+
+				} else if (direction.equals("left")) {
+					x_d -= 1;
+
+				}
+				int x_r = x_d;
+				int y_r = y_d;
+				int fieldsChanged = 0;
+				while (board[y_d].charAt(x_d) != 'w') {
+					Player p = getPlayerAt(x_d, y_d);
+					if (p != null) {
+						me.addPoints(20);
+						p.addPoints(-20);
+						break;
+					}
+					if (direction.equals("up")) {
+						fields[x_d][y_d].setGraphic(new ImageView(fire_up));
+						y_d--;
+
+					} else if (direction.equals("down")) {
+						fields[x_d][y_d].setGraphic(new ImageView(fire_down));
+						y_d++;
+
+					} else if (direction.equals("right")) {
+						fields[x_d][y_d].setGraphic(new ImageView(fire_right));
+						x_d++;
+
+					} else if (direction.equals("left")) {
+						fields[x_d][y_d].setGraphic(new ImageView(fire_left));
+						x_d--;
+					}
+					fieldsChanged++;
+				}
+				ExecutorService executor = Executors.newSingleThreadExecutor();
+				int finalFieldsChanged = fieldsChanged;
+				executor.submit(() -> {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					removeShot(x_r, y_r, direction, finalFieldsChanged);
+				});
+			}
+		});
+	}
+
+	private void removeShot(int x_r, int y_r, String direction, int fieldsChanged) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				int xPos_r = x_r;
+				int yPos_r = y_r;
+				for (int i = fieldsChanged; i > 0; i--) {
+					fields[xPos_r][yPos_r].setGraphic(new ImageView(image_floor));
+					if (direction.equals("up")) {
+						yPos_r--;
+
+					} else if (direction.equals("down")) {
+						yPos_r++;
+
+					} else if (direction.equals("right")) {
+						xPos_r++;
+
+					} else if (direction.equals("left")) {
+						xPos_r--;
+					}
+				}
+			}
+		});
 	}
 
 	private boolean containsName(String name) {

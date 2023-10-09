@@ -17,6 +17,8 @@ public class ClientInputThread extends Thread {
                     gui.runPlayerMoved(input[1], Integer.parseInt(input[2]), Integer.parseInt(input[3]), input[4]);
                 } else if (input[0].equals("newPlayer")) {
                     gui.addNewPlayer(input[1], Integer.parseInt(input[2]), Integer.parseInt(input[3]), input[4]);
+                } else if (input[0].equals("shoot")) {
+                    gui.shootFromPlayerPublic(input[1]);
                 }
             }
         } catch (Exception e) {

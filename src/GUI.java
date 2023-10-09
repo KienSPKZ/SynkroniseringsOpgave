@@ -82,6 +82,12 @@ public class GUI extends Application {
 			playerSpawns.add("9 4");
 			playerSpawns.add("14 15");
 			playerSpawns.add("6 18");
+			playerSpawns.add("14 2");
+			playerSpawns.add("2 1");
+			playerSpawns.add("10 4");
+			playerSpawns.add("4 1");
+			playerSpawns.add("7 12");
+			playerSpawns.add("8 13");
 			GridPane grid = new GridPane();
 			grid.setHgap(10);
 			grid.setVgap(10);
